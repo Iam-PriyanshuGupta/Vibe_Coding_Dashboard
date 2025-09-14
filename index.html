@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vibe Coding: Enterprise Adoption & Impact Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Energetic & Playful -->
+    <!-- Application Structure Plan: A dashboard layout with a fixed vertical sidebar navigation and a main content area. This structure provides a persistent, intuitive navigation experience, allowing users to seamlessly switch between different thematic sections (Overview, Productivity, Sentiment, Challenges, Human Factor, References) without losing context. The main content for each section uses a card-based grid layout to segment information into logical, digestible chunks, enhancing readability and visual appeal. This design is chosen for its scalability and its familiar, user-friendly pattern for presenting complex data. -->
+    <!-- Visualization & Content Choices: 'Daily Time Saved' -> Goal: Inform -> Viz: Large stat card -> Interaction: None -> Justification: Provides a tangible, high-impact metric upfront. 'Trust Trend' -> Goal: Compare -> Viz: Bar Chart (Chart.js) -> Interaction: Tooltips -> Justification: Visually demonstrates the year-over-year decline in developer trust. 'Future Developer Role' -> Goal: Organize -> Viz: Styled HTML flowchart -> Interaction: None -> Justification: Clearly illustrates the conceptual shift in job roles without complex diagrams. 'References' -> Goal: Inform -> Viz: Styled list -> Interaction: None -> Justification: Provides necessary sourcing and credibility in a clean, readable format. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        :root {
+            --brand-blue: #00A6FB;
+            --brand-pink: #DC0073;
+            --brand-teal: #00E5B3;
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            height: 300px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            margin: 0.25rem 0;
+            border-radius: 0.5rem;
+            color: #4a5568;
+            font-weight: 500;
+            transition: all 0.2s ease-in-out;
+            border-left: 4px solid transparent;
+        }
+        .nav-link:hover {
+            background-color: #e2e8f0;
+            color: #1a202c;
+        }
+        .nav-link.active {
+            background-color: #e0f2fe;
+            color: var(--brand-blue);
+            font-weight: 600;
+            border-left-color: var(--brand-blue);
+        }
+        .section-content {
+            display: none;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        .section-content.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .tab-button.active {
+            background-color: var(--brand-blue);
+            color: white;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+    </style>
+</head>
+<body class="antialiased text-slate-700">
+
+    <div class="relative min-h-screen lg:flex">
+        <aside class="bg-slate-100 text-slate-900 w-full lg:w-64 lg:fixed lg:h-screen lg:border-r lg:border-slate-200 p-4 z-20">
+            <div class="flex items-center gap-2 mb-8">
+                <span class="text-2xl">📊</span>
+                <h1 class="text-xl font-bold text-slate-800">Vibe Coding Dashboard</h1>
+            </div>
+            <nav id="mainNav">
+                <a href="#" class="nav-link active" data-target="overview">
+                    <span class="mr-3">🏠</span> Overview
+                </a>
+                <a href="#" class="nav-link" data-target="productivity">
+                    <span class="mr-3">🚀</span> Productivity
+                </a>
+                <a href="#" class="nav-link" data-target="sentiment">
+                    <span class="mr-3">🤔</span> Sentiment
+                </a>
+                <a href="#" class="nav-link" data-target="challenges">
+                    <span class="mr-3">⚙️</span> Challenges
+                </a>
+                <a href="#" class="nav-link" data-target="human-factor">
+                    <span class="mr-3">👤</span> Human Factor
+                </a>
+                 <a href="#" class="nav-link" data-target="references">
+                    <span class="mr-3">📚</span> References
+                </a>
+            </nav>
+        </aside>
+
+        <main class="w-full lg:ml-64 p-4 sm:p-6 lg:p-8">
+            
+            <section id="overview" class="section-content active" data-section="overview">
+                <h2 class="text-3xl font-bold text-slate-800 mb-2">The State of AI in Development: 2025</h2>
+                <p class="text-slate-600 mb-8">
+                    AI coding assistants have transitioned from novelty to necessity. Enterprise adoption is widespread, driven by the pursuit of efficiency and innovation. These key metrics highlight the depth of integration across the software development landscape.
+                </p>
+                <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+                    <div class="bg-white p-6 rounded-xl shadow-md border-l-4 border-cyan-400">
+                        <p class="text-sm text-slate-500 font-medium">Daily Time Saved Per Dev</p>
+                        <p class="text-4xl font-extrabold text-slate-800 mt-1">56 Minutes</p>
+                        <p class="text-xs text-slate-500 mt-2">UK public sector trial found significant daily time savings.</p>
+                    </div>
+                     <div class="bg-white p-6 rounded-xl shadow-md border-l-4 border-teal-400">
+                        <p class="text-sm text-slate-500 font-medium">Code Suggestion Acceptance</p>
+                        <p class="text-4xl font-extrabold text-slate-800 mt-1">15.8%</p>
+                        <p class="text-xs text-slate-500 mt-2">Highlights the need for human oversight and review.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-md border-l-4 border-sky-400">
+                        <p class="text-sm text-slate-500 font-medium">Enterprise AI Adoption</p>
+                        <p class="text-4xl font-extrabold text-slate-800 mt-1">78%</p>
+                        <p class="text-xs text-slate-500 mt-2">Organizations using AI in at least one business function.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-md border-l-4 border-indigo-400">
+                        <p class="text-sm text-slate-500 font-medium">Developer Usage (Plan to Use)</p>
+                        <p class="text-4xl font-extrabold text-slate-800 mt-1">84%</p>
+                        <p class="text-xs text-slate-500 mt-2">Near-universal adoption within the developer community.</p>
+                    </div>
+                </div>
+                 <div class="mt-8 bg-white p-6 rounded-xl shadow-md">
+                     <h3 class="text-xl font-semibold text-slate-800 mb-4">Adoption Across Company Size</h3>
+                     <p class="text-slate-600 mb-4">While large enterprises are leading the charge, AI tool adoption is strong across the board, with over half of all active users working in teams of 10 or fewer. This indicates a democratization of advanced development tools.</p>
+                     <div class="chart-container">
+                        <canvas id="adoptionDoughnutChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <section id="productivity" class="section-content" data-section="productivity">
+                <h2 class="text-3xl font-bold text-slate-800 mb-2">The Productivity Paradox</h2>
+                <p class="text-slate-600 mb-8">
+                    Does "vibe coding" actually accelerate development? The data reveals a complex reality. While AI boosts performance on routine tasks, it can become a bottleneck for experienced developers on complex, context-heavy projects.
+                </p>
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow-md">
+                        <h3 class="text-xl font-semibold text-slate-800 mb-1">Perception vs. Reality</h3>
+                         <p id="productivity-explainer" class="text-slate-500 mb-4 text-sm"></p>
+                        <div class="flex justify-center mb-4 space-x-2">
+                            <button data-dev-type="all" class="px-4 py-2 text-xs font-semibold bg-slate-200 rounded-md tab-button active">Overall View</button>
+                            <button data-dev-type="junior" class="px-4 py-2 text-xs font-semibold bg-slate-200 rounded-md tab-button">Junior Devs</button>
+                            <button data-dev-type="senior" class="px-4 py-2 text-xs font-semibold bg-slate-200 rounded-md tab-button">Senior Devs</button>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="productivityChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-md flex flex-col justify-center">
+                        <h3 class="text-xl font-semibold text-slate-800 mb-4">Key Findings</h3>
+                        <ul class="space-y-4 text-slate-600">
+                             <li class="flex items-start">
+                                <span class="text-teal-500 mr-3 mt-1">✔</span>
+                                <div><strong class="text-slate-700">Code Commits Up:</strong> AI users see an average 13.5% increase in weekly code commits.</div>
+                            </li>
+                             <li class="flex items-start">
+                                <span class="text-pink-500 mr-3 mt-1">✘</span>
+                                <div><strong class="text-slate-700">Slower on Complex Tasks:</strong> Experienced developers were 19% slower on real-world open-source tasks when using AI.</div>
+                            </li>
+                             <li class="flex items-start">
+                                <span class="text-teal-500 mr-3 mt-1">✔</span>
+                                <div><strong class="text-slate-700">Great for Onboarding:</strong> AI dramatically accelerates learning and boilerplate task completion for junior developers.</div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section id="sentiment" class="section-content" data-section="sentiment">
+                <h2 class="text-3xl font-bold text-slate-800 mb-2">Developer Sentiment: The Trust Deficit</h2>
+                <p class="text-slate-600 mb-8">
+                    Despite massive adoption, developers are growing more skeptical of AI's reliability. The initial hype is giving way to a more nuanced understanding of its limitations, leading to a significant gap between tool usage and trust in its output.
+                </p>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                     <div class="bg-white p-6 rounded-xl shadow-md">
+                         <h3 class="text-xl font-semibold text-slate-800 mb-4">Trust in AI is Falling</h3>
+                         <p class="text-slate-600 text-sm mb-4">While more developers are using AI tools, the percentage who trust the accuracy of the output has decreased year-over-year.</p>
+                        <div class="chart-container">
+                            <canvas id="trustTrendChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-md flex flex-col justify-center text-center">
+                        <h3 class="text-xl font-semibold text-slate-800 mb-4">The "Almost Right" Problem</h3>
+                        <p class="text-6xl font-extrabold text-[var(--brand-pink)]">66%</p>
+                        <p class="mt-2 text-lg font-medium text-slate-700">of developers struggle with AI solutions that are close, but ultimately incorrect.</p>
+                        <p class="text-slate-500 mt-4 text-sm">This leads to one of the most cited pain points: debugging AI-generated code often takes longer than writing it from scratch.</p>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="challenges" class="section-content" data-section="challenges">
+                <h2 class="text-3xl font-bold text-slate-800 mb-2">Enterprise Integration Hurdles</h2>
+                <p class="text-slate-600 mb-8">
+                    Deploying AI coding tools at scale is not a simple plug-and-play solution. Organizations must navigate critical issues related to security, code quality, and the inherent limitations of AI in understanding complex, proprietary systems.
+                </p>
+                <div class="bg-white p-6 rounded-xl shadow-md">
+                    <div id="challenge-tabs" class="flex flex-wrap justify-center border-b border-slate-200 mb-6 -mx-2">
+                        <button data-challenge="security" class="flex-grow text-center p-3 m-2 rounded-md bg-slate-100 tab-button active">🔐 Security & Governance</button>
+                        <button data-challenge="context" class="flex-grow text-center p-3 m-2 rounded-md bg-slate-100 tab-button">🧩 Context Blindness</button>
+                        <button data-challenge="quality" class="flex-grow text-center p-3 m-2 rounded-md bg-slate-100 tab-button">📉 Code Quality</button>
+                        <button data-challenge="skills" class="flex-grow text-center p-3 m-2 rounded-md bg-slate-100 tab-button">🛠️ The Skills Gap</button>
+                    </div>
+                    <div id="challenge-content" class="min-h-[200px] p-4 bg-slate-50 rounded-lg"></div>
+                </div>
+            </section>
+            
+            <section id="human-factor" class="section-content" data-section="human-factor">
+                <h2 class="text-3xl font-bold text-slate-800 mb-2">The Evolving Engineer</h2>
+                 <p class="text-slate-600 mb-8">
+                    AI is not replacing developers, but it is fundamentally reshaping their roles and the skills required for success. The value of senior engineers is increasingly shifting toward architecture, mentorship, and critical oversight.
+                </p>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="bg-white p-6 rounded-xl shadow-md">
+                        <h3 class="text-xl font-semibold text-slate-800 mb-4">Productivity Gains by Experience</h3>
+                        <p class="text-slate-600 text-sm mb-4">Junior developers see the largest productivity gains on routine tasks, while senior developers see more modest gains, reflecting their focus on complex, less-automatable problems.</p>
+                        <div class="chart-container">
+                            <canvas id="experienceImpactChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-md">
+                        <h3 class="text-xl font-semibold text-slate-800 mb-4">The Future Role of the Developer</h3>
+                        <p class="text-slate-600 text-sm mb-6">The emphasis is shifting from pure code generation to higher-level strategic tasks.</p>
+                         <div class="space-y-4">
+                            <div class="p-4 bg-slate-100 rounded-lg">
+                                <p class="font-bold text-slate-800">Then: Coder</p>
+                                <p class="text-sm text-slate-600">Focus on writing lines of code and implementing defined features.</p>
+                            </div>
+                            <div class="text-center text-slate-400 font-bold">▼</div>
+                             <div class="p-4 bg-sky-100 text-sky-800 rounded-lg border border-sky-200">
+                                <p class="font-bold">Now: AI Coordinator & Reviewer</p>
+                                <p class="text-sm">Prompting AI, validating outputs, integrating code, and ensuring quality and security.</p>
+                            </div>
+                             <div class="text-center text-slate-400 font-bold">▼</div>
+                            <div class="p-4 bg-indigo-100 text-indigo-800 rounded-lg border border-indigo-200">
+                                <p class="font-bold">Future: Architect & Strategist</p>
+                                <p class="text-sm">Designing systems, making high-level decisions, and mentoring teams on effective AI use.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="references" class="section-content" data-section="references">
+                <h2 class="text-3xl font-bold text-slate-800 mb-2">Source Material & References</h2>
+                 <p class="text-slate-600 mb-8">
+                    This interactive dashboard was synthesized from data and insights compiled from several key industry reports and surveys conducted in 2024 and 2025.
+                </p>
+                <div class="space-y-4">
+                    <div class="bg-white p-4 rounded-lg border border-slate-200">
+                        <h3 class="font-semibold text-slate-800">AI Coding Assistant Trial: UK Public Sector Findings</h3>
+                        <p class="text-sm text-slate-600">Provided key metrics on time saved, user satisfaction, and real-world code acceptance rates in a large-scale government trial.</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg border border-slate-200">
+                        <h3 class="font-semibold text-slate-800">Stack Overflow Developer Survey (2024 & 2025)</h3>
+                        <p class="text-sm text-slate-600">The primary source for developer sentiment, including the year-over-year trend in AI tool usage versus trust, and major developer pain points.</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg border border-slate-200">
+                        <h3 class="font-semibold text-slate-800">Measuring the Impact of Early-2025 AI on Developer Productivity (METR)</h3>
+                        <p class="text-sm text-slate-600">Offered critical, counter-intuitive data on the "productivity paradox," showing a slowdown for experienced developers on complex tasks.</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg border border-slate-200">
+                        <h3 class="font-semibold text-slate-800">Various Enterprise & Market Reports (Softura, Netcorp, IT Revolution)</h3>
+                        <p class="text-sm text-slate-600">Contributed statistics on enterprise adoption rates, impact on junior vs. senior developers, and emerging challenges like code duplication and security risks.</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const navLinks = document.querySelectorAll('.nav-link');
+    const sections = document.querySelectorAll('.section-content');
+
+    const FONT_DEFAULTS = { font: { family: 'Inter', size: 12 }, color: '#334155' };
+    Chart.defaults.plugins.legend.position = 'bottom';
+    Chart.defaults.plugins.legend.labels.boxWidth = 12;
+    Chart.defaults.plugins.title.display = false;
+    Chart.defaults.scale.ticks.color = '#64748b';
+    Chart.defaults.scale.grid.color = '#e2e8f0';
+    Object.assign(Chart.defaults, FONT_DEFAULTS);
+
+    const tooltipTitleCallback = {
+        plugins: {
+            tooltip: {
+                callbacks: {
+                    title: (tooltipItems) => {
+                        const item = tooltipItems[0];
+                        let label = item.chart.data.labels[item.dataIndex];
+                        return Array.isArray(label) ? label.join(' ') : label;
+                    }
+                }
+            }
+        }
+    };
+    
+    const chartRenderStatus = {};
+
+    function setActiveSection(targetId) {
+        navLinks.forEach(link => link.classList.toggle('active', link.dataset.target === targetId));
+        sections.forEach(section => section.classList.toggle('active', section.id === targetId));
+        renderChartsForView(targetId);
+    }
+
+    navLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const targetId = e.currentTarget.dataset.target;
+            setActiveSection(targetId);
+        });
+    });
+
+    function renderChartsForView(viewId) {
+        if (chartRenderStatus[viewId]) return;
+
+        switch (viewId) {
+            case 'overview': createOverviewCharts(); break;
+            case 'productivity': createProductivityChart(); break;
+            case 'sentiment': createSentimentCharts(); break;
+            case 'human-factor': createExperienceImpactChart(); break;
+        }
+        chartRenderStatus[viewId] = true;
+    }
+    
+    const challengeData = {
+        security: { title: '🔐 Security & Governance', content: 'AI models trained on public data may reproduce insecure code patterns or leak sensitive info via prompts. One study found AI-assisted code led to a 10x increase in security issues. Strict governance and mandatory reviews are essential.' },
+        context: { title: '🧩 Context Blindness', content: 'Enterprise applications are complex. AI often lacks deep, cross-repository context, leading to suggestions that are correct in isolation but fail within the larger system. 65% of developers report AI tools miss critical context.' },
+        quality: { title: '📉 Code Quality', content: 'Speed can mask quality issues. Reports show a 4x increase in code duplication and a rise in "churn," suggesting a move away from maintainable code. Without discipline, AI can accelerate technical debt.' },
+        skills: { title: '🛠️ The Skills Gap', content: 'Effective AI use requires new skills, particularly in "prompt engineering." Simply providing tools without training leads to disappointing results. One in five AI suggestions are estimated to contain factual errors.' }
+    };
+    
+    function createOverviewCharts() {
+        const ctx = document.getElementById('adoptionDoughnutChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Small Teams (1-10)', 'Medium Teams (11-100)', 'Enterprise (>100)'],
+                datasets: [{
+                    data: [51, 24, 25],
+                    backgroundColor: ['#00E5B3', '#00A6FB', '#5856d6'],
+                    borderColor: '#f8fafc',
+                    borderWidth: 4,
+                }]
+            },
+            options: { ...tooltipTitleCallback, maintainAspectRatio: false }
+        });
+    }
+
+    function createProductivityChart() {
+        const ctx = document.getElementById('productivityChart').getContext('2d');
+        const data = {
+            all: { labels: ['Developer Expectation', 'Post-Task Estimate', 'Actual Performance'], values: [24, 20, -19], explainer: 'On complex tasks, developers believe AI helps, but studies show it can actually slow them down.'},
+            junior: { labels: ['Boilerplate Code', 'Learning New Language', 'Routine Tasks'], values: [40, 35, 27], explainer: 'Junior developers see significant speed boosts on common, well-defined tasks.'},
+            senior: { labels: ['System Architecture', 'Complex Debugging', 'Novel Problem Solving'], values: [-10, -19, -5], explainer: 'For experienced developers on complex tasks, AI struggles with context and can introduce delays.'}
+        };
+
+        const chart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: data.all.labels,
+                datasets: [{
+                    label: 'Percentage Change in Speed',
+                    data: data.all.values,
+                    backgroundColor: (c) => c.raw >= 0 ? 'rgba(0, 229, 179, 0.7)' : 'rgba(220, 0, 115, 0.7)',
+                    borderColor: (c) => c.raw >= 0 ? '#00E5B3' : '#DC0073',
+                    borderWidth: 2,
+                }]
+            },
+            options: { ...tooltipTitleCallback, maintainAspectRatio: false, indexAxis: 'y', scales: { x: { title: { display: true, text: '% Change (Faster -> | <- Slower)' } } }, plugins: { legend: { display: false } } }
+        });
+
+        document.getElementById('productivity-explainer').textContent = data.all.explainer;
+        document.querySelector('#productivity').addEventListener('click', (e) => {
+            if(e.target.matches('.tab-button')) {
+                const type = e.target.dataset.devType;
+                chart.data.labels = data[type].labels;
+                chart.data.datasets[0].data = data[type].values;
+                document.getElementById('productivity-explainer').textContent = data[type].explainer;
+                chart.update();
+                document.querySelectorAll('#productivity .tab-button').forEach(b => b.classList.remove('active'));
+                e.target.classList.add('active');
+            }
+        });
+    }
+    
+    function createSentimentCharts() {
+        const ctx = document.getElementById('trustTrendChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Trust in AI Accuracy'],
+                datasets: [
+                    { label: '2024', data: [40], backgroundColor: 'rgba(160, 174, 192, 0.7)', borderColor: '#A0AEC0', borderWidth: 2 },
+                    { label: '2025', data: [29], backgroundColor: 'rgba(0, 166, 251, 0.7)', borderColor: '#00A6FB', borderWidth: 2 }
+                ]
+            },
+            options: { ...tooltipTitleCallback, maintainAspectRatio: false, scales: { y: { beginAtZero: true, max: 100, title: { display: true, text: '% of Developers Who Trust AI' } } } }
+        });
+    }
+
+    function createExperienceImpactChart() {
+        const ctx = document.getElementById('experienceImpactChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Junior Developers', 'Senior Developers'],
+                datasets: [{
+                    label: 'Productivity Boost Range (%)',
+                    data: [[21, 40], [7, 16]],
+                    backgroundColor: ['rgba(0, 229, 179, 0.7)', 'rgba(0, 166, 251, 0.7)'],
+                    borderColor: ['#00E5B3', '#00A6FB'],
+                    borderWidth: 2,
+                }]
+            },
+            options: { ...tooltipTitleCallback, maintainAspectRatio: false, scales: { y: { beginAtZero: true, title: { display: true, text: 'Reported Productivity Boost (%)' } } }, plugins: { legend: { display: false }, tooltip: { callbacks: { label: (c) => `Boost: ${c.raw[0]}% to ${c.raw[1]}%`, title: (t) => t[0].label } } } }
+        });
+    }
+
+    function initChallenges() {
+        const tabs = document.getElementById('challenge-tabs');
+        const content = document.getElementById('challenge-content');
+
+        function updateContent(challenge) {
+            const data = challengeData[challenge];
+            content.innerHTML = `<h3 class="text-xl font-bold text-slate-800 mb-2">${data.title}</h3><p class="text-slate-600 leading-relaxed">${data.content}</p>`;
+            tabs.querySelectorAll('.tab-button').forEach(btn => btn.classList.toggle('active', btn.dataset.challenge === challenge));
+        }
+
+        tabs.addEventListener('click', (e) => {
+            if (e.target.matches('.tab-button')) {
+                updateContent(e.target.dataset.challenge);
+            }
+        });
+        updateContent('security');
+    }
+
+    setActiveSection('overview');
+    initChallenges();
+});
+</script>
+
+</body>
+</html>
